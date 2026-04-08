@@ -1,3 +1,4 @@
+#A8-Sprite-Previewer
 import math
 
 from PyQt6.QtGui import *
@@ -33,14 +34,21 @@ class SpritePreview(QMainWindow):
 
     def setupUI(self):
         # An application needs a central widget - often a QFrame
-        frame = QFrame()
+        application_frame = QFrame()
+        application_layout = QHBoxLayout()
 
         # Add a lot of code here to make layouts, more QFrame or QWidgets, and
         # the other components of the program.
         # Create needed connections between the UI components and slot methods
         # you define in this class.
+        #text label
+        self.label = QLabel('testing testing!')
 
-        self.setCentralWidget(frame)
+        application_layout.addWidget(self.label)
+
+        application_frame.setLayout(application_layout)
+
+        self.setCentralWidget(application_frame)
 
 
     # You will need methods in the class to act as slots to connect to signals

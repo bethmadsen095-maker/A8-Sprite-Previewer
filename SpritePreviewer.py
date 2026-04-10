@@ -23,10 +23,13 @@ class SpritePreview(QMainWindow):
         self.setWindowTitle("Sprite Animation Preview")
         # This loads the provided sprite and would need to be changed for your own.
         self.num_frames = 21
-        self.frames = load_sprite('spriteImages',self.num_frames)
+        self.frames = load_sprite('images',self.num_frames)
 
+        self.current_frame = 0
         # Add any other instance variables needed to track information as the program
         # runs here
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.change_frame)
 
         # Make the GUI in the setupUI method
         self.setupUI()
@@ -40,32 +43,25 @@ class SpritePreview(QMainWindow):
         image_layout = QHBoxLayout(image_frame)
 
         #load image
-        #label displaying current sprite image
-        # self.sprite_name = QLabel(sprite_00.png)
-
+        #label displaying current sprite image - Temporary display
         self.label = QLabel()
         pixmap = QPixmap('sprite_00.png')
         self.label.setPixmap(pixmap)
-        # self.label.setPixmap(QPixmap.fromImage("sprite_00.png"))
 
         lcd = QLCDNumber()
         lcd.setMinimumHeight(60)
+
+
+
         #load slider
         self.slider = QSlider()
         self.slider.setMinimum(1)
         self.slider.setMaximum(100)
         self.slider.valueChanged.connect(lcd.display)
-        # self.slider.setTickPosition()
 
-        # Add a lot of code here to make layouts, more QFrame or QWidgets, and
-        # the other components of the program.
-        # Create needed connections between the UI components and slot methods
-        # you define in this class.
-        #text label
-        # self.label =
         self.button_test = QPushButton("Start")
         self.button_test.setCheckable(True)
-        self.button_test.setChecked(True)
+        self.button_test.setChecked(False)
         self.button_test.clicked.connect(self.start_or_stop)
 
 
@@ -85,10 +81,22 @@ class SpritePreview(QMainWindow):
     # You will need methods in the class to act as slots to connect to signals
     def start_or_stop(self):
         if self.button_test.isChecked():
+            self.timer.start(int(1000/(self.slider.value())))
             self.button_test.setText("Stop")
         else:
             self.button_test.setText("Start")
+            self.timer.stop()
         #put code here for what happens when the start/stop button is pushed
+        #stack overflow pyqt adding ticks to a qslider
+    # def update_fps_label(self):
+        #set text method
+    def change_frame(self):
+        #changes frame it's on
+        #current frame, next frame
+        self.current_frame +=1
+        if self.current_frame >= self.num_frames:
+            self.current_frame = 0
+        self.label.setPixmap(self.frames[self.current_frame])
 
 def main():
     app = QApplication([])

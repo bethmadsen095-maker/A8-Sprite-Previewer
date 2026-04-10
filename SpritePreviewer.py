@@ -1,5 +1,5 @@
 #A8-Sprite-Previewer
-import math
+import math,sys
 
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -17,7 +17,6 @@ def load_sprite(sprite_folder_name, number_of_frames):
     return frames
 
 class SpritePreview(QMainWindow):
-
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sprite Animation Preview")
@@ -30,19 +29,18 @@ class SpritePreview(QMainWindow):
         # Make the GUI in the setupUI method
         self.setupUI()
 
-
     def setupUI(self):
         application_frame = QFrame()
         application_layout = QVBoxLayout()
         image_frame = QFrame()
         image_layout = QHBoxLayout(image_frame)
 
-        #load starting image
+        #starting image
         self.label = QLabel()
         pixmap = self.frames[1]
         self.label.setPixmap(pixmap)
 
-        #load slider
+        #slider
         self.slider = QSlider()
         self.slider.setMinimum(1)
         self.slider.setMaximum(100)
@@ -50,12 +48,21 @@ class SpritePreview(QMainWindow):
         self.slider.setTickInterval(20)
         self.slider.valueChanged.connect(self.update_fps_label)
 
-        # frames per second label
+        #frames per second label
         self.fps_label = QLabel("Frames per second: 1")
 
+        #menu
+        menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
+        file_menu = menubar.addMenu('&File')
+        pause_action = QAction('&Pause',self)
+        pause_action.triggered.connect(self.pause_program)
+        exit_action = QAction('&Exit',self)
+        exit_action.triggered.connect(self.quit_program)
+        file_menu.addAction(pause_action)
+        file_menu.addAction(exit_action)
 
         #button
-
         self.start_button = QPushButton("Start")
         self.start_button.setCheckable(True)
         self.start_button.setChecked(False)
@@ -74,11 +81,9 @@ class SpritePreview(QMainWindow):
 
         self.setCentralWidget(application_frame)
 
-    # stack overflow pyqt adding ticks to a qslider
     def update_fps_label(self):
         value = self.slider.value()
         self.fps_label.setText(f"Frames per second: {value}")
-    # set text method
 
     def start_or_stop(self):
         if self.start_button.isChecked():
@@ -89,12 +94,18 @@ class SpritePreview(QMainWindow):
             self.timer.stop()
 
     def change_frame(self):
-        #changes frame it's on
-        #current frame, next frame
         self.current_frame +=1
         if self.current_frame >= self.num_frames:
             self.current_frame = 0
         self.label.setPixmap(self.frames[self.current_frame])
+
+    def quit_program(self):
+        sys.exit()
+
+    def pause_program(self):
+        self.timer.stop()
+        self.start_button.setText("Start")
+        self.start_button.setChecked(False)
 
 def main():
     app = QApplication([])

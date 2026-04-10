@@ -40,13 +40,22 @@ class SpritePreview(QMainWindow):
         image_layout = QHBoxLayout(image_frame)
 
         #load image
+        #label displaying current sprite image
+        # self.sprite_name = QLabel(sprite_00.png)
+
         self.label = QLabel()
         pixmap = QPixmap('sprite_00.png')
         self.label.setPixmap(pixmap)
         # self.label.setPixmap(QPixmap.fromImage("sprite_00.png"))
 
+        lcd = QLCDNumber()
+        lcd.setMinimumHeight(60)
         #load slider
         self.slider = QSlider()
+        self.slider.setMinimum(1)
+        self.slider.setMaximum(100)
+        self.slider.valueChanged.connect(lcd.display)
+        # self.slider.setTickPosition()
 
         # Add a lot of code here to make layouts, more QFrame or QWidgets, and
         # the other components of the program.
@@ -54,24 +63,32 @@ class SpritePreview(QMainWindow):
         # you define in this class.
         #text label
         # self.label =
-        button_test = QPushButton("This is a test")
-
+        self.button_test = QPushButton("Start")
+        self.button_test.setCheckable(True)
+        self.button_test.setChecked(True)
+        self.button_test.clicked.connect(self.start_or_stop)
 
 
         image_layout.addWidget(self.label)
         image_layout.addWidget(self.slider)
-
+        application_layout.addWidget(lcd)
 
         image_frame.setLayout(image_layout)
         application_layout.addWidget(image_frame)
-        application_layout.addWidget(button_test)
+        application_layout.addWidget(self.button_test)
         application_frame.setLayout(application_layout)
+
 
         self.setCentralWidget(application_frame)
 
 
     # You will need methods in the class to act as slots to connect to signals
-
+    def start_or_stop(self):
+        if self.button_test.isChecked():
+            self.button_test.setText("Stop")
+        else:
+            self.button_test.setText("Start")
+        #put code here for what happens when the start/stop button is pushed
 
 def main():
     app = QApplication([])

@@ -21,64 +21,55 @@ class SpritePreview(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sprite Animation Preview")
-        # This loads the provided sprite and would need to be changed for your own.
-        self.num_frames = 21
+        self.num_frames = 20
         self.frames = load_sprite('images',self.num_frames)
 
         self.current_frame = 0
-        # Add any other instance variables needed to track information as the program
-        # runs here
         self.timer = QTimer()
         self.timer.timeout.connect(self.change_frame)
-
         # Make the GUI in the setupUI method
         self.setupUI()
 
 
     def setupUI(self):
-        # An application needs a central widget - often a QFrame
         application_frame = QFrame()
         application_layout = QVBoxLayout()
         image_frame = QFrame()
         image_layout = QHBoxLayout(image_frame)
 
-        #load image
-        #label displaying current sprite image - Temporary display
+        #load starting image
         self.label = QLabel()
-        pixmap = QPixmap('sprite_00.png')
+        pixmap = self.frames[1]
         self.label.setPixmap(pixmap)
-
-        lcd = QLCDNumber()
-        lcd.setMinimumHeight(60)
-
-
 
         #load slider
         self.slider = QSlider()
         self.slider.setMinimum(1)
         self.slider.setMaximum(100)
-        self.slider.valueChanged.connect(lcd.display)
+        self.slider.setTickPosition(QSlider.TickPosition.TicksBothSides)
+        self.slider.setTickInterval(20)
 
         self.button_test = QPushButton("Start")
         self.button_test.setCheckable(True)
         self.button_test.setChecked(False)
         self.button_test.clicked.connect(self.start_or_stop)
 
-
+        #add widgets to image layout
         image_layout.addWidget(self.label)
         image_layout.addWidget(self.slider)
-        application_layout.addWidget(lcd)
-
         image_frame.setLayout(image_layout)
+
+        #add widgets to application layout
         application_layout.addWidget(image_frame)
         application_layout.addWidget(self.button_test)
         application_frame.setLayout(application_layout)
 
-
         self.setCentralWidget(application_frame)
 
+    # stack overflow pyqt adding ticks to a qslider
+    # def update_fps_label(self):
+    # set text method
 
-    # You will need methods in the class to act as slots to connect to signals
     def start_or_stop(self):
         if self.button_test.isChecked():
             self.timer.start(int(1000/(self.slider.value())))
@@ -86,10 +77,7 @@ class SpritePreview(QMainWindow):
         else:
             self.button_test.setText("Start")
             self.timer.stop()
-        #put code here for what happens when the start/stop button is pushed
-        #stack overflow pyqt adding ticks to a qslider
-    # def update_fps_label(self):
-        #set text method
+
     def change_frame(self):
         #changes frame it's on
         #current frame, next frame

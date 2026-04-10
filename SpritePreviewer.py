@@ -48,11 +48,18 @@ class SpritePreview(QMainWindow):
         self.slider.setMaximum(100)
         self.slider.setTickPosition(QSlider.TickPosition.TicksBothSides)
         self.slider.setTickInterval(20)
+        self.slider.valueChanged.connect(self.update_fps_label)
 
-        self.button_test = QPushButton("Start")
-        self.button_test.setCheckable(True)
-        self.button_test.setChecked(False)
-        self.button_test.clicked.connect(self.start_or_stop)
+        # frames per second label
+        self.fps_label = QLabel("Frames per second: 1")
+
+
+        #button
+
+        self.start_button = QPushButton("Start")
+        self.start_button.setCheckable(True)
+        self.start_button.setChecked(False)
+        self.start_button.clicked.connect(self.start_or_stop)
 
         #add widgets to image layout
         image_layout.addWidget(self.label)
@@ -61,21 +68,24 @@ class SpritePreview(QMainWindow):
 
         #add widgets to application layout
         application_layout.addWidget(image_frame)
-        application_layout.addWidget(self.button_test)
+        application_layout.addWidget(self.fps_label)
+        application_layout.addWidget(self.start_button)
         application_frame.setLayout(application_layout)
 
         self.setCentralWidget(application_frame)
 
     # stack overflow pyqt adding ticks to a qslider
-    # def update_fps_label(self):
+    def update_fps_label(self):
+        value = self.slider.value()
+        self.fps_label.setText(f"Frames per second: {value}")
     # set text method
 
     def start_or_stop(self):
-        if self.button_test.isChecked():
+        if self.start_button.isChecked():
             self.timer.start(int(1000/(self.slider.value())))
-            self.button_test.setText("Stop")
+            self.start_button.setText("Stop")
         else:
-            self.button_test.setText("Start")
+            self.start_button.setText("Start")
             self.timer.stop()
 
     def change_frame(self):
